@@ -9,8 +9,8 @@ import java.util.Arrays;
 
 
 public class CounterTest{
-    private ArrayList<String> exps = new ArrayList<>(Arrays.asList("2+2*2", "2+(12*(-1)+10)*(2-1)", "11+(3*(-1)+2)-10", "(-1)*(-1)-1"));
-    private double results[] = {6.0, 0.0, 0.0, 0.0};
+    private ArrayList<String> exps = new ArrayList<>(Arrays.asList("2+((-2)*2+3*(123-3*9))*(10-10)","1+(3*(-1)+2)*2","(-2)*2+3*96.0","2+2*2","2+(12*(-1)+10)*(2-1)","11+(3*(-1)+2)-10","(-1)*(-1)-1","2+(-2.0)*1.0"));
+    private double results[] = {2.0, -1.0, 284.0, 6.0, 0.0, 0.0, 0.0, 0.0};
 
     @Test
     public void testResult() {

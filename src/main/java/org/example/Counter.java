@@ -7,7 +7,6 @@ public class Counter {
     private TokenCreator token_generator;
     private ArrayList<String> tokens;
     private double result = 0;
-    private ArrayList<String> bin_ops = new ArrayList<>(Arrays.asList("*","/","+","-"));
 
     private ArrayList<String> get_slice(ArrayList<String> a, int x, int y){
         ArrayList<String> slice = new ArrayList<String>();
@@ -21,7 +20,8 @@ public class Counter {
         int brackets = count_matches(tokens, "(");
         for(int i=0;i<brackets;i++){
             int lb = tokens.lastIndexOf("(");
-            int rb = tokens.indexOf(")");
+            ArrayList<String> buf_tokens = get_slice(tokens, lb, tokens.size());
+            int rb = buf_tokens.indexOf(")")+lb;
             ArrayList<String> br_exp = get_slice(tokens, lb+1, rb);
             ArrayList<String> lslice = get_slice(tokens, 0, lb);
             ArrayList<String> rslice = get_slice(tokens, rb+1, tokens.size());
@@ -30,11 +30,17 @@ public class Counter {
                 lslice.addAll(lslice.size(), rslice);
             }
             tokens = lslice;
+
+
         }
+
         return count_nonbr(tokens);
     }
 
     private double count_nonbr(ArrayList<String> tokens) {
+        tokens.removeAll(new ArrayList<>(Arrays.asList("")));
+        tokens.removeAll(new ArrayList<>(Arrays.asList(" ")));
+        ArrayList<String> bin_ops = new ArrayList<>(Arrays.asList("+","-","*","/"));
         if(!(tokens.size() == 0)) {
             if (tokens.size() == 1) {
                 return (double) Double.parseDouble(tokens.get(0));
@@ -45,17 +51,14 @@ public class Counter {
                     } else {
                         switch (bin_op) {
                             case "*":
-                                result = count_nonbr(get_slice(tokens, 0, tokens.indexOf("*"))) * count_nonbr(get_slice(tokens, tokens.indexOf("*") + 1, tokens.size()));
-                                break;
+                                return count_nonbr(get_slice(tokens, 0, tokens.indexOf("*"))) * count_nonbr(get_slice(tokens, tokens.indexOf("*") + 1, tokens.size()));
                             case "/":
-                                result = count_nonbr(get_slice(tokens, 0, tokens.indexOf("/"))) / count_nonbr(get_slice(tokens, tokens.indexOf("/") + 1, tokens.size()));
-                                break;
+                                return count_nonbr(get_slice(tokens, 0, tokens.indexOf("/"))) / count_nonbr(get_slice(tokens, tokens.indexOf("/") + 1, tokens.size()));
                             case "+":
-                                result = count_nonbr(get_slice(tokens, 0, tokens.indexOf("+"))) + count_nonbr(get_slice(tokens, tokens.indexOf("+") + 1, tokens.size()));
-                                break;
+                                return count_nonbr(get_slice(tokens, 0, tokens.indexOf("+"))) + count_nonbr(get_slice(tokens, tokens.indexOf("+") + 1, tokens.size()));
                             case "-":
-                                result = count_nonbr(get_slice(tokens, 0, tokens.indexOf("-"))) - count_nonbr(get_slice(tokens, tokens.indexOf("-") + 1, tokens.size()));
-                                break;
+                                return count_nonbr(get_slice(tokens, 0, tokens.indexOf("-"))) - count_nonbr(get_slice(tokens, tokens.indexOf("-") + 1, tokens.size()));
+
                             }
                         }
                     }
